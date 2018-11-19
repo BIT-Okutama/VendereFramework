@@ -31,6 +31,10 @@ contract Admin {
         admins[adminAddress] = false;
     }
     
+    function transferSuperAdmin(address newSuperAdmin) public superAdminOnly() {
+        superAdmin = newSuperAdmin;
+    }
+    
     
     
 }

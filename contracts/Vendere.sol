@@ -13,9 +13,9 @@ contract Vendere is ERC1155Mintable, Admin, SellerTrust, Random {
     mapping (address => int) public sellers;
     
     uint256 MINIMUM_FEE = 200000000000000000;
-    uint8 ADMIN_PERMISSION_LIMIT = 10;
+    uint8 ADMIN_PERMISSION_LIMIT = 1;
     uint256 approvalThreshold = 0; 
-    string public version = "0.4";
+    string public version = "0.5";
     
     struct PendingSeller{
         address sellerAddress;
@@ -40,6 +40,28 @@ contract Vendere is ERC1155Mintable, Admin, SellerTrust, Random {
     }
     
     
+    //OTHERS
+    
+    function getContractBalance() public view returns(uint){
+        return address(this).balance;
+    }
+    
+    function getContractOwner() public view returns(address){
+        return currentOwner;
+    }
+    
+    function getApprovalThreshold() public view returns(uint256){
+        return approvalThreshold;
+    }
+    
+    function getItemNonce() public view returns(uint256) {
+        return nonce;
+    }
+    
+    function getAppVersion() public view returns(string) {
+        return version;
+    }
+    
     
     //SELLER
     
@@ -49,12 +71,16 @@ contract Vendere is ERC1155Mintable, Admin, SellerTrust, Random {
         //A = 10, B = 12, C = 14
         //A: 24-10 -> B: 14-12 -> C: 2 -> C is chosen one!  
         for(uint256 i=0 ; i < overallSellers.length ; i++){
+            
+            if(sellers[overallSellers[i]] == -1 || sellers[overallSellers[i]] == 0)
+                continue;
+            
             uint256 weight = getSellerWeight(overallSellers[i]); 
             if(selected > weight){
                 selected -= weight;
             }
             else{
-                overallSellers[i].transfer(address(this).balance);
+                overallSellers[i].transfer(200000000000000000);
                 break;
             }
         }
@@ -89,6 +115,7 @@ contract Vendere is ERC1155Mintable, Admin, SellerTrust, Random {
         overallSellers.push(merchantAddress);
         ADMIN_PERMISSION_LIMIT--;
     }
+    
     
     function approveSeller(uint256 _index) public sellerOnly() {
         require(ADMIN_PERMISSION_LIMIT == 0);
@@ -181,17 +208,6 @@ contract Vendere is ERC1155Mintable, Admin, SellerTrust, Random {
         itemPrice = items[id].price;
         itemQuantity = items[id].balances[msg.sender];
     }
-    
-    //OTHERS
-    
-    function getNonce() public view returns(uint256) {
-        return nonce;
-    }
-    
-    function getAppVersion() public view returns(string) {
-        return version;
-    }
-    
- 
+   
     
 }
