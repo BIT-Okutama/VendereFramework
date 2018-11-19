@@ -9,8 +9,8 @@ import './Random.sol';
 contract Vendere is ERC1155Mintable, Admin, SellerTrust, Random {
     
     address currentOwner;
-    address[] overallSellers;
-    mapping (address => int) public sellers;
+    address[] public overallSellers; //PUBLIC
+    mapping (address => int) public sellers; //PUBLIC
     
     uint256 MINIMUM_FEE = 200000000000000000;
     uint8 ADMIN_PERMISSION_LIMIT = 1;
@@ -63,6 +63,7 @@ contract Vendere is ERC1155Mintable, Admin, SellerTrust, Random {
     }
     
     
+    
     //SELLER
     
     function incentivizeSeller() private {
@@ -91,6 +92,7 @@ contract Vendere is ERC1155Mintable, Admin, SellerTrust, Random {
         pendingSellerCtr++;
         pending[pendingSellerCtr] = PendingSeller({sellerAddress: msg.sender, approvalVotes: 0});
         
+        approvalThreshold = 0;
         for(uint256 i = 0; i < overallSellers.length ; i++){
             if(sellers[overallSellers[i]] == 1){
                 approvalThreshold += getSellerWeight(overallSellers[i]);    

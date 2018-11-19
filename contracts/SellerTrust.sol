@@ -34,7 +34,7 @@ contract SellerTrust {
             sellerVotes[_seller].upVotes--;
         }
         sellerVotes[_seller].voteState[msg.sender] = -1;
-        sellerVotes[_seller].downVotes--;
+        sellerVotes[_seller].downVotes++;
     }
     
     function removeVote(address _seller) public {
